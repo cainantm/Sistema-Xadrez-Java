@@ -30,6 +30,7 @@ public class ChessMatch {
         Position target = targetPosition.toPosition(); // conversão da posição para valor de matriz
 
         validateSourcePosition(source);
+        validateTargetPosition(source,target);
 
         Piece capturedPiece = makeMove(source, target);
         return (ChessPiece) capturedPiece;
@@ -71,5 +72,12 @@ public class ChessMatch {
         placeNewPiece('d', 8, new King(board, Color.BLACK));
 
     }
+
+    private void validateTargetPosition(Position source, Position target){
+        if (!board.piece(source).possibleMove(target)) {
+            throw new ChessException("A peça escolhida não pode ser mover para posição de destino");
+        }
+    }
+
 
 }
