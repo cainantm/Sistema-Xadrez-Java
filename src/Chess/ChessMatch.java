@@ -25,6 +25,12 @@ public class ChessMatch {
         return mat;
     }
 
+    public boolean[][] possibleMoves(ChessPosition sourcePosition){
+        Position position = sourcePosition.toPosition();
+        validateSourcePosition(position);
+        return board.piece(position).possibleMoves();
+    }
+
     public ChessPiece performChessMove(ChessPosition sourcePosition, ChessPosition targetPosition){
         Position source = sourcePosition.toPosition(); // conversão da posição para valor de matriz
         Position target = targetPosition.toPosition(); // conversão da posição para valor de matriz
@@ -78,6 +84,8 @@ public class ChessMatch {
             throw new ChessException("A peça escolhida não pode ser mover para posição de destino");
         }
     }
+
+
 
 
 }
