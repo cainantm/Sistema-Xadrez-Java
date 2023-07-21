@@ -10,8 +10,22 @@ public class ChessMatch {
 
     private Board board;
 
+    private int turn;
+
+    private Color currentPlayer;
+
+    public int getTurn(){
+        return turn;
+    }
+
+    public Color getCurrentPlayer(){
+        return currentPlayer;
+    }
+
     public ChessMatch(){
         board = new Board(8,8);
+        turn = 1;
+        currentPlayer = Color.WHITE;
         initialSetup();
     }
 
@@ -39,6 +53,7 @@ public class ChessMatch {
         validateTargetPosition(source,target);
 
         Piece capturedPiece = makeMove(source, target);
+        nextTurn();
         return (ChessPiece) capturedPiece;
     }
 
@@ -48,6 +63,9 @@ public class ChessMatch {
         }
         if (!board.piece(position).isThereAnyPossibleMove()) { //verificando se há movimentos possíveis para a peça
             throw new ChessException("Não existe movimentos possíveis para a peça escolhida");
+        }
+        if (currentPlayer != ((ChessPiece)board.piece(position)).getColor()){
+            throw new ChessException("Peça escolhida não é sua");
         }
     }
 
@@ -85,7 +103,10 @@ public class ChessMatch {
         }
     }
 
-
+    private void nextTurn(){
+        turn++;
+        currentPlayer = (currentPlayer == Color.WHITE) ? Color.BLACK : Color.WHITE; // condição ternária para alternar o jogador atual; condição ? verdadeiro : falso;
+    }
 
 
 }
