@@ -16,6 +16,7 @@ public class ChessMatch {
     private int turn;
 
     private Color currentPlayer;
+    private boolean check;
     private List<Piece> piecesOnTheBoard = new ArrayList<>();
     private List<Piece> capturedPieces = new ArrayList<>();
 
@@ -25,6 +26,10 @@ public class ChessMatch {
 
     public Color getCurrentPlayer(){
         return currentPlayer;
+    }
+
+    public boolean getCheck(){
+        return check;
     }
 
     public ChessMatch(){
@@ -58,6 +63,15 @@ public class ChessMatch {
         validateTargetPosition(source,target);
 
         Piece capturedPiece = makeMove(source, target);
+
+        if(testCheck(currentPlayer)){ // testando se o jogador colocou-se em check;
+            undoMove(source, target, capturedPiece);
+            throw new ChessException("Você não pode se colocar em check");
+        }
+
+        //testando se o oponente está em check e mudando o status de check
+        check = (testCheck(opponent(currentPlayer))) ? true : false;
+
         nextTurn();
         return (ChessPiece) capturedPiece;
     }
@@ -85,6 +99,16 @@ public class ChessMatch {
         }
 
         return capturedPiece;
+    }
+
+    private void undoMove(Position source, Position target, Piece capturedPiece){
+        Piece p = board.removePiece(target);
+        board.placePiece(p, source);
+        if(capturedPiece != null){
+            board.placePiece(capturedPiece, source);
+            capturedPieces.remove(capturedPiece);
+            piecesOnTheBoard.add(capturedPiece);
+        }
     }
 
     private void placeNewPiece(char column, int row, ChessPiece piece){
@@ -120,6 +144,30 @@ public class ChessMatch {
         currentPlayer = (currentPlayer == Color.WHITE) ? Color.BLACK : Color.WHITE; // condição ternária para alternar o jogador atual; condição ? verdadeiro : falso;
     }
 
+    private Color opponent(Color color){
+        return (color == Color.WHITE) ? Color.BLACK : Color.WHITE;
+    }
 
+    private ChessPiece king(Color color){ //procurando pelo rei da cor.
+        List<Piece> list = piecesOnTheBoard.stream().filter(x -> ((ChessPiece)x).getColor() == color).toList(); //Procurando peças na lista da mesma cor do argumento. piece não tem cor, então é feito downcast para ChessPiece.
+        for (Piece p : list){
+            if (p instanceof King){
+                return (ChessPiece)p;
+            }
+        }
+        throw new IllegalStateException("Não existe o rei " + color + " no tabuleiro");
+    }
+
+    private boolean testCheck(Color color){
+        Position kingPosition = king(color).getChessPosition().toPosition(); // aqui pega a posição do rei em formato de matriz.
+        List<Piece> opponentPieces = piecesOnTheBoard.stream().filter(x -> ((ChessPiece)x).getColor() == opponent(color)).toList(); // filtrando as peças do oponente pela cor.
+        for (Piece p : opponentPieces){ // procurando por movimentos que vao para o rei.
+            boolean[][] mat = p.possibleMoves(); // cria uma matriz com os movimentos das peças inimigas.
+            if (mat[kingPosition.getRow()][kingPosition.getColumn()]){ // compara se a matriz de movimentos da peça inimiga conincide com a posição do rei.
+                return true;
+            }
+        }
+        return false;
+    }
 
 }
