@@ -109,6 +109,26 @@ public class ChessMatch {
             capturedPieces.add(capturedPiece);
         }
 
+        // movimento especial - roque pequeno (lado do rei)
+        if(p instanceof King && target.getColumn() == source.getColumn() + 2){ // testando se o rei moveu duas casas para direita (roque pequeno)
+            Position sourceT = new Position(source.getRow(), source.getColumn()+3); // pegando a posiçao da torre
+            Position targetT = new Position(source.getRow(), source.getColumn()+1); // local para onde a torre vai
+            ChessPiece rook = (ChessPiece) board.removePiece(sourceT); // removendo a torre da posição que ela está
+            board.placePiece(rook, targetT); // movendo a torre para a posição final ao lado esquerdo do rei
+            rook.increaseMoveCount(); // aumentando o número de movimentos da peça
+        }
+
+        // movimento especial - roque grande (lado da rainha)
+        if(p instanceof King && target.getColumn() == source.getColumn() - 2){ // testando se o rei moveu duas casas para direita (roque pequeno)
+            Position sourceT = new Position(source.getRow(), source.getColumn()-4); // pegando a posiçao da torre
+            Position targetT = new Position(source.getRow(), source.getColumn()-1); // local para onde a torre vai
+            ChessPiece rook = (ChessPiece) board.removePiece(sourceT); // removendo a torre da posição que ela está
+            board.placePiece(rook, targetT); // movendo a torre para a posição final ao lado esquerdo do rei
+            rook.increaseMoveCount(); // aumentando o número de movimentos da peça
+        }
+
+
+
         return capturedPiece;
     }
 
@@ -121,6 +141,25 @@ public class ChessMatch {
             capturedPieces.remove(capturedPiece);
             piecesOnTheBoard.add(capturedPiece);
         }
+
+        // movimento especial - roque pequeno (lado do rei)
+        if(p instanceof King && target.getColumn() == source.getColumn() + 2){
+            Position sourceT = new Position(source.getRow(), source.getColumn()+3);
+            Position targetT = new Position(source.getRow(), source.getColumn()+1);
+            ChessPiece rook = (ChessPiece) board.removePiece(targetT);
+            board.placePiece(rook, sourceT);
+            rook.decreaseMoveCount();
+        }
+
+        // movimento especial - roque grande (lado da rainha)
+        if(p instanceof King && target.getColumn() == source.getColumn() - 2){
+            Position sourceT = new Position(source.getRow(), source.getColumn()-4);
+            Position targetT = new Position(source.getRow(), source.getColumn()-1);
+            ChessPiece rook = (ChessPiece) board.removePiece(targetT);
+            board.placePiece(rook, sourceT);
+            rook.decreaseMoveCount();
+        }
+
     }
 
     private void placeNewPiece(char column, int row, ChessPiece piece){
@@ -135,7 +174,7 @@ public class ChessMatch {
         placeNewPiece('c', 1, new Bishop(board, Color.WHITE));
         placeNewPiece('f', 1, new Bishop(board, Color.WHITE));
         placeNewPiece('a', 1, new Rook(board, Color.WHITE));
-        placeNewPiece('e', 1, new King(board, Color.WHITE));
+        placeNewPiece('e', 1, new King(board, Color.WHITE, this)); // this é a auto referencia da partida que é necessária para instaciar o rei
         placeNewPiece('h', 1, new Rook(board, Color.WHITE));
         placeNewPiece('a', 2, new Pawn(board, Color.WHITE));
         placeNewPiece('b', 2, new Pawn(board, Color.WHITE));
@@ -152,7 +191,7 @@ public class ChessMatch {
         placeNewPiece('c', 8, new Bishop(board, Color.BLACK));
         placeNewPiece('b', 8, new Knight(board, Color.BLACK));
         placeNewPiece('g', 8, new Knight(board, Color.BLACK));
-        placeNewPiece('e', 8, new King(board, Color.BLACK));
+        placeNewPiece('e', 8, new King(board, Color.BLACK, this));
         placeNewPiece('h', 8, new Rook(board, Color.BLACK));
         placeNewPiece('a', 7, new Pawn(board, Color.BLACK));
         placeNewPiece('b', 7, new Pawn(board, Color.BLACK));
