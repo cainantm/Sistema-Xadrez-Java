@@ -41,7 +41,11 @@ public class Main {
 
                 if(chessMatch.getPromoted() != null){ // código para que o jogador escolha qual peça ele vai querer
                     System.out.print("Escolha a peça para ser promovida (B/N/R/Q): ");
-                    String type = sc.nextLine();
+                    String type = sc.nextLine().toUpperCase();
+                    while (!type.equals("B") && !type.equals("N") && !type.equals("R") && !type.equals("Q")) {
+                        System.out.print("Valor inválido, digite novamente: (B/N/R/Q) ");
+                        type = sc.nextLine().toUpperCase();
+                    }
                     chessMatch.replacePromotedPiece(type);
                 }
 
