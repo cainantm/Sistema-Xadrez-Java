@@ -46,7 +46,7 @@ public class Pawn extends ChessPiece {
             // se o peão preto já tiver movido +2 e depois a peça branca chegar, não será disponibilizado o movimento.
             if (position.getRow() == 3){ // no caso da peça branca, deve ser feito enPassant qnd a peça está na posição xadrez 4, que é 3 na matriz.
                 Position left = new Position(position.getRow(), position.getColumn() - 1); // pegando a peça que está ao lado esquerdo
-                if (getBoard().positionExists(left) && isThereOpponentPiece(left) && getBoard().piece(left) == chessMatch.getEnPassantVulnerable()){ // fazendo os testes para saber se a peça ao lado
+                if (getBoard().positionExists(left) && isThereOpponentPiece(left) && getBoard().piece(left) == chessMatch.getEnPassantVulnerable()){ // fazendo os testes para saber
                     //se a posição existe, se é uma peça oponente e se a peça está vulnerável ao enPassant
                 mat[left.getRow() - 1][left.getColumn()] = true;
                 }

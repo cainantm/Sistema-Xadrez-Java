@@ -38,6 +38,13 @@ public class Main {
                 if(capturedPiece != null){
                     captured.add(capturedPiece);
                 }
+
+                if(chessMatch.getPromoted() != null){ // código para que o jogador escolha qual peça ele vai querer
+                    System.out.print("Escolha a peça para ser promovida (B/N/R/Q): ");
+                    String type = sc.nextLine();
+                    chessMatch.replacePromotedPiece(type);
+                }
+
             } catch (ChessException e){
                 System.out.println(e.getMessage());
                 sc.nextLine();
